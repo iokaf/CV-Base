@@ -1,0 +1,125 @@
+{
+    "os": "Linux-5.15.0-73-generic-x86_64-with-glibc2.35",
+    "python": "3.10.9",
+    "heartbeatAt": "2023-06-07T08:03:43.536910",
+    "startedAt": "2023-06-07T08:03:43.075198",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "/media/yanny/Extreme SSD/colo_vs_gastro/CV-Base/train.py",
+    "codePath": "train.py",
+    "git": {
+        "remote": "https://github.com/iokaf/CV-Base.git",
+        "commit": "4f59668c2c37d8e5a0187e21dde69875a1106edc"
+    },
+    "email": "ioanniskaf@gmail.com",
+    "root": "/media/yanny/Extreme SSD/colo_vs_gastro/CV-Base",
+    "host": "yanny-B550-VISION-D",
+    "username": "yanny",
+    "executable": "/home/yanny/anaconda3/bin/python",
+    "cpu_count": 8,
+    "cpu_count_logical": 16,
+    "cpu_freq": {
+        "current": 2.2957499999999995,
+        "min": 2200.0,
+        "max": 3900.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3900.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3900.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3900.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3900.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3900.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3900.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3900.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3900.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3900.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3900.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3900.0
+        },
+        {
+            "current": 3.156,
+            "min": 2200.0,
+            "max": 3900.0
+        },
+        {
+            "current": 2.032,
+            "min": 2200.0,
+            "max": 3900.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3900.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3900.0
+        },
+        {
+            "current": 3.9,
+            "min": 2200.0,
+            "max": 3900.0
+        }
+    ],
+    "disk": {
+        "total": 116.31898498535156,
+        "used": 103.99622344970703
+    },
+    "gpu": "NVIDIA GeForce RTX 2080 SUPER",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA GeForce RTX 2080 SUPER",
+            "memory_total": 8589934592
+        }
+    ],
+    "memory": {
+        "total": 15.54031753540039
+    }
+}

@@ -1,0 +1,4 @@
+python-opencv
+pytorch-lightning
+timm
+torch
