@@ -79,7 +79,14 @@ def train(config: dict):
     return best_valid_loss
 
 def main():
+    wandb.init(
+        project=base_config["logging"]["project_name"],
+    )
+
     score = train(wandb.config)
+    
+    # Add extra config to the wandb run
+
     wandb.log({"best_valid_loss": score})
 
 
