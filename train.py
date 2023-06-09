@@ -25,6 +25,11 @@ loaders = get_dataloaders(
     augmentations=augmentations,
 )
 
+config["train_dataloader_length"] = len(loaders["train_dataloader"])
+config["valid_dataloader_length"] = len(loaders["valid_dataloader"])
+config["test_dataloader_length"] = len(loaders["test_dataloader"])
+
+
 wandb.init(
     project=config["logging"]["project_name"],
     config=config,
@@ -44,6 +49,9 @@ trainer.fit(
     loaders["valid_dataloader"]
 )
 
+print(f"Best validation loss: {checkpoint_callback.best_model_score}")
+
+
 best_path = checkpoint_callback.best_model_path
 
 classifier = Classifier.load_from_checkpoint(
@@ -54,5 +62,5 @@ classifier = Classifier.load_from_checkpoint(
 
 trainer.test(
     classifier,
-    test_dataloaders=loaders["test_dataloader"]
+    loaders["test_dataloader"]
 )

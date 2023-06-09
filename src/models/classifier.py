@@ -31,6 +31,8 @@ class Classifier(pl.LightningModule):
 
         self.name = config["model"]["name"]
 
+        self.use_scheduler = config["optimizer"]["use_scheduler"]
+
         self.wandb = wandb
 
         self.set_loss_and_activation(config["model"]["mutually_exclusive"])
@@ -156,7 +158,7 @@ class Classifier(pl.LightningModule):
 
         if self.wandb:
             self.wandb.log({
-                "val_loss": result["loss"], 
+                "valid_loss": result["loss"], 
                 "epoch": self.current_epoch, 
                 "batch": batch_idx, 
                 "step": self.global_step, 
@@ -230,6 +232,7 @@ class Classifier(pl.LightningModule):
 
         self.valid_metric_monitor.reset()
 
+
     def on_test_epoch_end(self, outputs: List[Dict[str, torch.Tensor]]=None):
         """Test epoch end hook.
 
@@ -300,6 +303,9 @@ class Classifier(pl.LightningModule):
             lr=self.config["optimizer"]["learning_rate"],
             weight_decay=self.config["optimizer"]["weight_decay"],
         )
+
+        if not self.use_scheduler:
+            return optimizer
 
         scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
             optimizer,

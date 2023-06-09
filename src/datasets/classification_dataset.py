@@ -118,6 +118,11 @@ class ClassificationDataset(Dataset):
         item = self.data[idx]
         image = cv2.imread(item["image_path"])
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        
+
+        crop = item.get("crop")
+        if crop is not None:
+            image = image[crop[0]:crop[1], crop[2]:crop[3]]
 
         if self.augmentations is not None:
             image = self.augmentations(image=image)["image"]
@@ -211,6 +216,7 @@ def get_dataloaders(
         transforms=transforms,
         augmentations=augmentations,
     )
+
 
     train_dataloader = DataLoader(
         dataset=datasets["train_dataset"],
