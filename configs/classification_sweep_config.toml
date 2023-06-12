@@ -47,7 +47,7 @@ weight_decay = 0.0002
 eta_min = 0.000001
 
 [training]
-max_epochs = 20
+max_epochs = 30
 device = "cuda"
 checkpoint_directory = "./checkpoints"
 save_top_k = 1

@@ -54,9 +54,9 @@ def train_valid_test_split(
     test_data = []
 
     for item in data:
-        if item["fold"] in valid_folds:
+        if item["fold"] % 10 in valid_folds:
             valid_data.append(item)
-        elif item["fold"] in test_folds:
+        elif item["fold"] % 10 in test_folds:
             test_data.append(item)
         else:
             train_data.append(item)
@@ -237,6 +237,10 @@ def get_dataloaders(
         transforms=transforms,
         augmentations=augmentations,
     )
+
+    print(f"Train dataset size: {len(datasets['train_dataset'])}")
+    print(f"Valid dataset size: {len(datasets['valid_dataset'])}")
+    print(f"Test dataset size: {len(datasets['test_dataset'])}")
 
     train_dataloader = DataLoader(
         dataset=datasets["train_dataset"],

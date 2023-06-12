@@ -94,6 +94,7 @@ def main():
         project=base_config["logging"]["project_name"],
     )
 
+
     manager = mp.Manager()
     return_dict = manager.dict()
 
@@ -105,6 +106,8 @@ def main():
     p.start()
     p.join()
 
+    wandb.log(base_config)
+    
     p.terminate()
     # Log the best validation loss for each process
     wandb.log({"best_valid_loss": return_dict["best_valid_loss"]})
