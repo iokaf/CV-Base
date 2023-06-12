@@ -42,7 +42,7 @@ def create_trainer(config: Dict) -> pl.Trainer:
         accelerator=config["training"]["device"],
         max_epochs=config["training"]["max_epochs"],
         precision=config["training"]["precision"],
-        callbacks=[checkpoint_callback],
+        callbacks=[checkpoint_callback, early_stopping_callback],
     )
 
     return trainer, checkpoint_callback

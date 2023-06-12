@@ -33,6 +33,7 @@ device = "cuda"
 checkpoint_directory = "./checkpoints"
 save_top_k = 1
 precision = 16
+stopping_patience = 5
 
 
 [dataloading]
