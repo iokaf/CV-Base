@@ -24,8 +24,11 @@ loaders = get_dataloaders(
 
 config["train_dataloader_length"] = len(loaders["train_dataloader"])
 config["valid_dataloader_length"] = len(loaders["valid_dataloader"])
-config["test_dataloader_length"] = len(loaders["test_dataloader"])
 
+if loaders.get("test_dataloader") is not None:
+    config["test_dataloader_length"] = len(loaders["test_dataloader"])
+else:
+    config["test_dataloader_length"] = 0
 
 wandb.init(
     project=config["logging"]["project_name"],
@@ -57,7 +60,8 @@ classifier = Classifier.load_from_checkpoint(
     wandb=None
 )
 
-trainer.test(
-    classifier,
-    loaders["test_dataloader"]
-)
+if loaders.get("test_dataloader") is not None:
+    trainer.test(
+        classifier,
+        loaders["test_dataloader"]
+    )

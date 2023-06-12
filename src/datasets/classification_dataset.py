@@ -1,4 +1,5 @@
 """This module implements the basic dataset class for classification tasks."""
+import os
 import json
 from typing import Any, Dict, List, Optional, Tuple, Union
 
@@ -72,6 +73,7 @@ class ClassificationDataset(Dataset):
     def __init__(
         self, 
         data: List[Dict[str, Any]],
+        images_dir: str,
         transforms: Any,
         augmentations: Optional[Any] = None,
         ):
@@ -90,6 +92,7 @@ class ClassificationDataset(Dataset):
         self.data = data
         self.transforms = transforms
         self.augmentations = augmentations
+        self.images_dir = images_dir
 
     def __len__(self) -> int:
         """Returns the length of the dataset.
@@ -117,7 +120,19 @@ class ClassificationDataset(Dataset):
             dict: A dictionary containing the data.
         """
         item = self.data[idx]
-        image = cv2.imread(item["image_path"])
+
+        video_filename = item["video_filename"]
+
+        if not video_filename.endswith(".mkv"):
+            video_filename += ".mkv"
+
+        frame_number = item["frame_num"]
+
+        image_path = os.path.join(
+            self.images_dir, video_filename, f"{frame_number:07d}.jpg"
+        )
+
+        image = cv2.imread(image_path)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         
 
@@ -130,7 +145,7 @@ class ClassificationDataset(Dataset):
 
         image = self.transforms(image=image)["image"]
         
-        label = numpy.array(item["label"])
+        label = numpy.array(item["last_cut"]).astype(int)
         # label = numpy.atleast_1d(label)
         # label = torch.tensor(label, dtype=torch.long)
         result = {
@@ -142,6 +157,7 @@ class ClassificationDataset(Dataset):
     
 def create_datasets(
         split_data: Dict, 
+        images_dir: str, 
         transforms: Any, 
         augmentations: Any
     ) -> Tuple[Dataset, Dataset, Dataset]:
@@ -150,6 +166,7 @@ def create_datasets(
     Arguments:
     ----------
         split_data (dict): A dictionary containing the train, validation and test sets.
+        images_dir (str): The path to the directory containing the images.
         transforms (Any): The transforms to be applied to the data.
         augmentations (Any): The augmentations to be applied to the data.
 
@@ -160,18 +177,21 @@ def create_datasets(
 
     train_dataset = ClassificationDataset(
         data=split_data["train_data"],
+        images_dir=images_dir,
         transforms=transforms,
         augmentations=augmentations,
     )
 
     valid_dataset = ClassificationDataset(
         data=split_data["valid_data"],
+        images_dir=images_dir,
         transforms=transforms,
         augmentations=None,
     )
 
     test_dataset = ClassificationDataset(
         data=split_data["test_data"],
+        images_dir=images_dir,
         transforms=transforms,
         augmentations=None,
     )
@@ -213,6 +233,7 @@ def get_dataloaders(
 
     datasets = create_datasets(
         split_data=split_data,
+        images_dir=config["data"]["images_directory"],
         transforms=transforms,
         augmentations=augmentations,
     )

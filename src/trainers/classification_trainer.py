@@ -31,18 +31,22 @@ def create_trainer(config: Dict) -> pl.Trainer:
         mode="min",
     )
 
-    early_stopping_callback = EarlyStopping(
-        monitor="valid_loss",
-        patience=config["training"]["stopping_patience"],
-        mode="min",
-    )
+    callbacks = [checkpoint_callback]
+
+    if config["training"]["stopping_patience"] > 0:
+        early_stopping_callback = EarlyStopping(
+            monitor="valid_loss",
+            patience=config["training"]["stopping_patience"],
+            mode="min",
+        )
+        callbacks.append(early_stopping_callback)
 
 
     trainer = pl.Trainer(
         accelerator=config["training"]["device"],
         max_epochs=config["training"]["max_epochs"],
         precision=config["training"]["precision"],
-        callbacks=[checkpoint_callback, early_stopping_callback],
+        callbacks=callbacks,
     )
 
     return trainer, checkpoint_callback
