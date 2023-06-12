@@ -1,3 +1,5 @@
+from typing import Dict
+
 import time
 import toml
 
@@ -17,12 +19,18 @@ base_config = toml.load(config_path)
 sweep_config = base_config.pop("sweep_configuration")
 
 
-def train(config: dict):
+def train(config: dict, val_dict: Dict):
 
-    model_name = config.model_names
-    learning_rate = config.learning_rate
-    batch_size = config.batch_size
-    use_scheduler = config.use_scheduler
+    model_name = wandb.config.model_names
+    learning_rate = wandb.config.learning_rate
+    batch_size = wandb.config.batch_size
+    use_scheduler = wandb.config.use_scheduler
+
+
+    print(f"Model name: {model_name}")
+    print(f"Learning rate: {learning_rate}")
+    print(f"Batch size: {batch_size}")
+    print(f"Use scheduler: {use_scheduler}")
 
     config = {key: value for key, value in base_config.items()}
 
@@ -36,10 +44,7 @@ def train(config: dict):
     transformations = get_transformations(config=config)
     augmentations = get_augmentations(config=config)
 
-    data_path = config["data"]["annotations_path"]
-
     loaders = get_dataloaders(
-        data_path=data_path,
         config=config,
         transforms=transformations,
         augmentations=augmentations,
@@ -76,18 +81,36 @@ def train(config: dict):
     time.sleep(2)
     torch.cuda.empty_cache()
 
-    return best_valid_loss
+    val_dict["best_valid_loss"] = best_valid_loss.item()
+
+    return val_dict
+
+import multiprocessing as mp
+
+
 
 def main():
     wandb.init(
         project=base_config["logging"]["project_name"],
     )
 
-    score = train(wandb.config)
-    
-    # Add extra config to the wandb run
+    manager = mp.Manager()
+    return_dict = manager.dict()
 
-    wandb.log({"best_valid_loss": score})
+    # Create a threading process that calls the train function with the config
+    # and the values dict. The values dict is shared between all the processes
+    # and is used to store the best validation loss for each process.
+
+    p = mp.Process(target=train, args=(base_config, return_dict))
+    p.start()
+    p.join()
+
+    p.terminate()
+    # Log the best validation loss for each process
+    wandb.log({"best_valid_loss": return_dict["best_valid_loss"]})
+
+    return return_dict["best_valid_loss"]
+
 
 
 sweep_id = wandb.sweep(

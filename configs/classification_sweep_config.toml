@@ -18,7 +18,7 @@ min = 0.0001
 max =  0.001
 
 [sweep_configuration.parameters.batch_size]
-values = [40, 60]
+values = [30, 40, 50]
 
 [sweep_configuration.parameters.use_scheduler]
 values = [true, false]
@@ -47,11 +47,12 @@ weight_decay = 0.0002
 eta_min = 0.000001
 
 [training]
-max_epochs = 30
+max_epochs = 20
 device = "cuda"
 checkpoint_directory = "./checkpoints"
 save_top_k = 1
 precision = 16
+stopping_patience = 5
 
 
 [dataloading]

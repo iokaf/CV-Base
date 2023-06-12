@@ -16,10 +16,7 @@ config = toml.load(config_path)
 transformations = get_transformations(config=config)
 augmentations = get_augmentations(config=config)
 
-data_path = config["data"]["annotations_path"]
-
 loaders = get_dataloaders(
-    data_path=data_path,
     config=config,
     transforms=transformations,
     augmentations=augmentations,

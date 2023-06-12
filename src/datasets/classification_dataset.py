@@ -1,9 +1,10 @@
 """This module implements the basic dataset class for classification tasks."""
 import json
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import cv2
 import numpy
+import pytorch_lightning as pl
 import torch
 
 from torch.utils.data import Dataset, DataLoader
@@ -183,7 +184,6 @@ def create_datasets(
 
 
 def get_dataloaders(
-        data_path: str,
         config: Dict[str, Any],
         transforms: Any,
         augmentations: Any,
@@ -199,7 +199,7 @@ def get_dataloaders(
     --------
         dict: A dictionary containing the train, validation and test dataloaders.
     """
-
+    data_path = config["data"]["annotations_path"]
     data = load_data(data_path)
     
     valid_folds = config["data"]["validation_folds"]
@@ -216,7 +216,6 @@ def get_dataloaders(
         transforms=transforms,
         augmentations=augmentations,
     )
-
 
     train_dataloader = DataLoader(
         dataset=datasets["train_dataset"],
@@ -252,5 +251,32 @@ def get_dataloaders(
     }
 
 
+class MyDataModule(pl.LightningDataModule):
+    """Define a DataModule for your data.
+    """
 
+    def __init__(
+            self, config: Dict[str, Any], transforms: Any,augmentations: Any):
+        loaders = get_dataloaders(
+            config=config,
+            transforms=transforms,
+            augmentations=augmentations,
+        )
+
+        self.train_dl = loaders["train_dataloader"]
+        self.valid_dl = loaders["valid_dataloader"]
+        self.test_dal = loaders["test_dataloader"]
+        
+    def setup(self, stage=None):
+        pass
+
+    def train_dataloader(self):
+        return self.train_dl
+    
+    def val_dataloader(self):
+        return self.valid_dl
+    
+    def test_dataloader(self):
+        return self.test_dl
+    
 

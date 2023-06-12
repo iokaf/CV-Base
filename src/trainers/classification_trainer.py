@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import Any, Dict, List, Tuple
 
 import pytorch_lightning as pl
-from pytorch_lightning.callbacks import ModelCheckpoint
+from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
 
 def create_trainer(config: Dict) -> pl.Trainer:
     """ Creates a pytorch lightning trainer.
@@ -30,6 +30,13 @@ def create_trainer(config: Dict) -> pl.Trainer:
         save_top_k=config["training"]["save_top_k"],
         mode="min",
     )
+
+    early_stopping_callback = EarlyStopping(
+        monitor="valid_loss",
+        patience=config["training"]["stopping_patience"],
+        mode="min",
+    )
+
 
     trainer = pl.Trainer(
         accelerator=config["training"]["device"],
