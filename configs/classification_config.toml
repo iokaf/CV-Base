@@ -12,6 +12,7 @@ images_directory = "/media/yanny/BackUp3/Polypectomy Quality Predictor/Snare_Res
 annotations_path = "/media/yanny/BackUp3/Polypectomy Quality Predictor/Predictor_Number_of_Cuts/data/train_data.json"
 validation_folds = [9]
 test_folds = []
+label_names = ["negative", "positive"]
 
 [transforms]
 width = 384

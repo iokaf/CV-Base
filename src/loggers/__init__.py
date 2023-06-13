@@ -1,1 +1,1 @@
-from src.loggers.classification_logger import ClassificationMetricMonitor
+from src.loggers.classification_logger import BinaryClassificationMetricMonitor, MulticlassClassificationMetricMonitor

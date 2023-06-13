@@ -19,19 +19,22 @@ def create_trainer(config: Dict) -> pl.Trainer:
 
     date = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
-    checkpoint_callback = ModelCheckpoint(
-        monitor="valid_loss",
-        dirpath=config["training"]["checkpoint_directory"],
-        filename=(
-            config["model"]["name"] +
-            date +
-            "-{epoch:02d}-{valid_loss:.5f}"
-            ),
-        save_top_k=config["training"]["save_top_k"],
-        mode="min",
-    )
+    callbacks = []
 
-    callbacks = [checkpoint_callback]
+    if config["training"]["save_top_k"] > 0:
+        checkpoint_callback = ModelCheckpoint(
+            monitor="valid_loss",
+            dirpath=config["training"]["checkpoint_directory"],
+            filename=(
+                config["model"]["name"] +
+                date +
+                "-{epoch:02d}-{valid_loss:.5f}"
+                ),
+            save_top_k=config["training"]["save_top_k"],
+            mode="min",
+        )
+
+        callbacks.append(checkpoint_callback)
 
     if config["training"]["stopping_patience"] > 0:
         early_stopping_callback = EarlyStopping(

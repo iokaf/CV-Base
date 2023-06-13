@@ -102,11 +102,13 @@ def main():
     # and the values dict. The values dict is shared between all the processes
     # and is used to store the best validation loss for each process.
 
+    wandb.log(base_config)
+    
     p = mp.Process(target=train, args=(base_config, return_dict))
     p.start()
     p.join()
 
-    wandb.log(base_config)
+    
     
     p.terminate()
     # Log the best validation loss for each process
