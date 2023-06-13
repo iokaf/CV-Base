@@ -163,3 +163,4 @@ data/
 notebooks/
 wandb/
 lightning_logs/
+checkpoints/
