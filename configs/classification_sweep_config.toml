@@ -52,7 +52,7 @@ max_epochs = 30
 device = "cuda"
 checkpoint_directory = "./checkpoints"
 save_top_k = 1
-precision = 16
+precision = "16-mixed"
 stopping_patience = 0 # < 1 to disable
 
 
