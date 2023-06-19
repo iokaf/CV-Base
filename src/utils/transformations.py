@@ -18,6 +18,17 @@ def get_transformations(config: Dict):
     transforms: albumentations.Compose
         The transformations to be applied to the images.
     """
+
+    if "input_sequence_length" in config["data"]:
+        # We have a -1 here because the first is there by default
+        additional_targets = {
+            f"image{i:04d}": "image" 
+            for i in range(config["data"]["input_sequence_length"])
+        }
+    else:
+        additional_targets = None
+
+
     transforms = A.Compose([
         A.Resize(
             height=config["transforms"]["height"],
@@ -30,7 +41,9 @@ def get_transformations(config: Dict):
             always_apply=True,
         ),
         ToTensorV2()
-    ])
+        ],
+    additional_targets=additional_targets
+    )
 
     return transforms
         
@@ -47,6 +60,15 @@ def get_augmentations(config: Dict):
     augments: albumentations.Compose
         The augmentations to be applied to the images.
     """
+    if "input_sequence_length" in config["data"]:
+        # We have a -1 here because the first is there by default
+        additional_targets = {
+            f"image{i:04d}": "image" 
+            for i in range(config["data"]["input_sequence_length"])
+        }
+    else:
+        additional_targets = None
+
     augments = A.Compose([
         A.Resize(
             height=config["transforms"]["height"],
@@ -63,7 +85,9 @@ def get_augmentations(config: Dict):
         A.Flip(0.25),
         A.HorizontalFlip(p=0.25),
         A.VerticalFlip(p=0.25),
-    ])
+        ], 
+        additional_targets=additional_targets
+    )
 
     return augments
 

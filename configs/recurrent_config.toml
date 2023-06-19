@@ -1,0 +1,68 @@
+[logging]
+project_name = "num_cuts_lstm"
+
+[model]
+name="lstm"
+device="cuda"
+num_classes = 2
+batch_norm = true
+positional_encoding = false
+mutually_exclusive = true
+
+
+[model.feature_extractor]
+name = "convnext_nano"
+pretrained = true
+use_checkpoint = false
+checkpoint_path = ""
+freeze = true
+
+[model.lstm]
+hidden_size = 256
+num_layers = 2
+bidirectional = false
+dropout = 0.0
+
+[optimizer]
+name = "AdamW"
+learning_rate = 0.001
+weight_decay = 0.0002
+eta_min = 0.000001
+use_scheduler = false
+
+[data]
+images_directory = "/media/yanny/BackUp3/Polypectomy Quality Predictor/Snare_Resections_Data/snare_resections"
+annotations_path = "/media/yanny/BackUp3/Polypectomy Quality Predictor/Predictor_Number_of_Cuts/data/train_data.json"
+
+validation_folds = [5, 9]
+test_folds = []
+label_names = ["negative", "positive"]
+
+channels = 3
+input_sequence_length = 10
+
+[dataloading]
+train_batch_size = 30
+valid_batch_size = 30
+test_batch_size = 30
+
+train_workers = 8
+valid_workers = 8
+test_workers = 8
+
+pin_memory = false
+
+[transforms]
+width = 224
+height = 224
+mean = [0.45211223, 0.27139644, 0.19264949]
+std = [0.31418097, 0.21088019, 0.16059452]
+
+
+[training]
+max_epochs = 30
+device = "gpu"
+checkpoint_directory = "./checkpoints"
+save_top_k = 1
+precision = "16-mixed"
+stopping_patience = 0
