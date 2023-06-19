@@ -63,9 +63,9 @@ def train_valid_test_split(
             train_data.append(item)
     
 
-    # FixMe: Specific for the current dataset
-    valid_data = [item for item in valid_data if item["first_cut"]]
-    test_data = [item for item in test_data if item["first_cut"]]
+    # # FixMe: Specific for the current dataset
+    # valid_data = [item for item in valid_data if item["first_cut"]]
+    # test_data = [item for item in test_data if item["first_cut"]]
 
     print("")
     print(100 * "-")
