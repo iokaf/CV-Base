@@ -1,5 +1,5 @@
 [logging]
-project_name = "sweep_num_cuts_verified_data"
+project_name = "sweep_colo_vs_gastro"
 
 [sweep_configuration]
 method = "bayes"
@@ -25,7 +25,7 @@ values = [true, false]
 
 [model]
 pretrained = true
-number_of_classes = 2
+number_of_classes = 3
 mutually_exclusive = true
 
 [data]
@@ -33,7 +33,7 @@ images_directory = "/home/swarm/Documents/Number_Of_Cuts/data/yun_images"
 annotations_path = "/home/swarm/Documents/Number_Of_Cuts/data/train_data.json"
 validation_folds = [0, 9]
 test_folds = []
-label_names = ["negative", "positive"]
+label_names = ["colonoscopy", "gastroscopy", "bad"]
 
 [transforms]
 width = 384

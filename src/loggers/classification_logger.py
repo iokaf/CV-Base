@@ -243,17 +243,16 @@ class MulticlassClassificationMetricMonitor:
                 metrics[metric_name] = metric.compute()
                 # Calculate a list of the metric values for each class
                 per_class_values = metric.compute()
-
+               
                 for class_idx, class_value in enumerate(per_class_values):
 
                     # Get class name
                     class_name = self.class_names[class_idx]
-
                     # Replace "per_class" with the class name to get the metric name
-                    metric_name = metric_name.replace("per_class", class_name)
+                    this_metric_name = metric_name.replace("per_class", class_name)
 
                     # Save the metric value
-                    metrics[metric_name] = class_value
+                    metrics[this_metric_name] = class_value
         
         return metrics
     

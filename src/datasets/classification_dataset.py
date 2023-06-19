@@ -151,16 +151,7 @@ class ClassificationDataset(Dataset):
         """
         item = self.data[idx]
 
-        video_filename = item["video_filename"]
-
-        if not video_filename.endswith(".mkv"):
-            video_filename += ".mkv"
-
-        frame_number = item["frame_num"]
-
-        image_path = os.path.join(
-            self.images_dir, video_filename, f"{frame_number:07d}.jpg"
-        )
+        image_path = item["image_path"]
 
         image = cv2.imread(image_path)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -175,7 +166,7 @@ class ClassificationDataset(Dataset):
 
         image = self.transforms(image=image)["image"]
         
-        label = numpy.array(item["last_cut"]).astype(int)
+        label = numpy.array(item["label"]).astype(int)
         # label = numpy.atleast_1d(label)
         # label = torch.tensor(label, dtype=torch.long)
         result = {
@@ -305,33 +296,4 @@ def get_dataloaders(
         "test_dataloader": test_dataloader,
     }
 
-
-class MyDataModule(pl.LightningDataModule):
-    """Define a DataModule for your data.
-    """
-
-    def __init__(
-            self, config: Dict[str, Any], transforms: Any,augmentations: Any):
-        loaders = get_dataloaders(
-            config=config,
-            transforms=transforms,
-            augmentations=augmentations,
-        )
-
-        self.train_dl = loaders["train_dataloader"]
-        self.valid_dl = loaders["valid_dataloader"]
-        self.test_dal = loaders["test_dataloader"]
-        
-    def setup(self, stage=None):
-        pass
-
-    def train_dataloader(self):
-        return self.train_dl
-    
-    def val_dataloader(self):
-        return self.valid_dl
-    
-    def test_dataloader(self):
-        return self.test_dl
-    
 
