@@ -2,7 +2,9 @@
 model.
 """
 from typing import Dict, List
-from torchmetrics import Accuracy, Precision, Recall, F1Score
+from torchmetrics import (
+    Accuracy, Precision, Recall, F1Score, ConfusionMatrix
+)
 
 
 class BinaryClassificationMetricMonitor:
@@ -36,6 +38,12 @@ class BinaryClassificationMetricMonitor:
                     task = task,
                     threshold=threshold,
                 ),
+
+                f"{prefix}_confusion_matrix": ConfusionMatrix(
+                    task = task,
+                    threshold=threshold,
+                ),
+
             }
     
         def update(self, step_resuts: Dict):
@@ -55,7 +63,7 @@ class BinaryClassificationMetricMonitor:
 
             # If we are predicting as two classes, get only the predictions for the
             # positive class.
-            if predictions.shape[1] == 2:
+            if len(predictions.shape) > 1 and predictions.shape[1] == 2:
                 predictions = predictions[:, 1]
             for metric in self.metrics.values():
                 metric.update(
@@ -72,7 +80,17 @@ class BinaryClassificationMetricMonitor:
             """
             results = {}
             for name, metric in self.metrics.items():
-                results[name] = metric.compute()
+                if "confusion_matrix" not in name:
+                    results[name] = metric.compute()
+                else:
+                    conf_mat = metric.compute()
+
+                    results[f"{self.prefix}_confusion_matrix"] = conf_mat.float().numpy().tolist()
+                    results[f"{self.prefix}_tn"] = conf_mat[0][0].float().item()
+                    results[f"{self.prefix}_fp"] = conf_mat[0][1].float().item()
+                    results[f"{self.prefix}_fn"] = conf_mat[1][0].float().item()
+                    results[f"{self.prefix}_tp"] = conf_mat[1][1].float().item()
+
             return results
     
         def reset(self):
@@ -223,8 +241,6 @@ class MulticlassClassificationMetricMonitor:
         for metric_name, metric in self.metrics.items():
             if "per_class" not in metric_name:
                 metrics[metric_name] = metric.compute()
-            else:
-
                 # Calculate a list of the metric values for each class
                 per_class_values = metric.compute()
 

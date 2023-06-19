@@ -29,12 +29,12 @@ use_scheduler = true
 
 
 [training]
-max_epochs = 30
+max_epochs = 100
 device = "cuda"
 checkpoint_directory = "./checkpoints"
 save_top_k = 1
-precision = 16
-stopping_patience = 5
+precision = "16-mixed"
+stopping_patience = 0
 
 
 [dataloading]
