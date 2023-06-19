@@ -11,7 +11,7 @@ name = "valid_loss"
 [sweep_configuration.parameters]
 
 [sweep_configuration.parameters.model_names]
-values = ["convnext_nano", "resnet34", "vit_tiny_patch16_384", "vit_small_patch16_384"]
+values = ["convnext_nano", "resnet34", "vit_tiny_patch16_384", "resnet50"]
 
 [sweep_configuration.parameters.learning_rate]
 min = 0.0001
@@ -29,8 +29,8 @@ number_of_classes = 2
 mutually_exclusive = true
 
 [data]
-images_directory = "/media/yanny/BackUp3/Polypectomy Quality Predictor/Snare_Resections_Data/snare_resections"
-annotations_path = "/media/yanny/BackUp3/Polypectomy Quality Predictor/Predictor_Number_of_Cuts/data/train_data.json"
+images_directory = "/home/swarm/Documents/Number_Of_Cuts/data/yun_images"
+annotations_path = "/home/swarm/Documents/Number_Of_Cuts/data/train_data.json"
 validation_folds = [0, 9]
 test_folds = []
 label_names = ["negative", "positive"]
@@ -48,7 +48,7 @@ weight_decay = 0.0002
 eta_min = 0.000001
 
 [training]
-max_epochs = 30
+max_epochs = 50
 device = "cuda"
 checkpoint_directory = "./checkpoints"
 save_top_k = 1

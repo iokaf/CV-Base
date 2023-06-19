@@ -5,7 +5,7 @@ import toml
 
 import torch
 import wandb
-
+import gc
 
 from src.utils.transformations import get_transformations, get_augmentations
 from src.datasets.classification_dataset import get_dataloaders
@@ -80,7 +80,7 @@ def train(config: dict, val_dict: Dict):
     
     time.sleep(2)
     torch.cuda.empty_cache()
-
+    gc.collect()
     val_dict["best_valid_loss"] = best_valid_loss.item()
 
     return val_dict
@@ -123,4 +123,4 @@ sweep_id = wandb.sweep(
     project = base_config["logging"]["project_name"],
 )
 
-wandb.agent(sweep_id, function=main, count=50)
+wandb.agent(sweep_id, function=main, count=150)

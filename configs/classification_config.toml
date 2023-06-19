@@ -2,15 +2,15 @@
 project_name = "num_cuts_verified_data"
 
 [model]
-name = "vit_tiny_patch16_384"
+name = "resnet50"  # "vit_small_patch16_384"
 pretrained = true
 number_of_classes = 2
 mutually_exclusive = true
 
 [data]
-images_directory = "/media/yanny/BackUp3/Polypectomy Quality Predictor/Snare_Resections_Data/snare_resections"
-annotations_path = "/media/yanny/BackUp3/Polypectomy Quality Predictor/Predictor_Number_of_Cuts/data/train_data.json"
-validation_folds = [1, 4]
+images_directory = "/home/swarm/Documents/Number_Of_Cuts/data/yun_images"
+annotations_path = "/home/swarm/Documents/Number_Of_Cuts/data/train_data.json"
+validation_folds = [9, 0]
 test_folds = []
 label_names = ["negative", "positive"]
 
@@ -38,9 +38,9 @@ stopping_patience = 0
 
 
 [dataloading]
-train_batch_size = 25
-valid_batch_size = 25
-test_batch_size = 25
+train_batch_size = 50
+valid_batch_size = 50
+test_batch_size = 50
 
 train_workers = 4
 valid_workers = 4

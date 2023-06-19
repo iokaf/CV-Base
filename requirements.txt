@@ -1,4 +1,4 @@
-python-opencv
+opencv-python
 pytorch-lightning
 timm
 torch
