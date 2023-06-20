@@ -197,6 +197,12 @@ class MulticlassClassificationMetricMonitor:
                 threshold=threshold,
                 average=None,
             ),
+
+            f"{prefix}_confusion_matrix": ConfusionMatrix(
+                task = task,
+                num_classes = num_classes,
+                threshold=threshold,
+            ),
         }
 
     def update(self, step_resuts: Dict):
@@ -242,6 +248,7 @@ class MulticlassClassificationMetricMonitor:
             if "per_class" not in metric_name:
                 metrics[metric_name] = metric.compute()
                 # Calculate a list of the metric values for each class
+            else:
                 per_class_values = metric.compute()
                
                 for class_idx, class_value in enumerate(per_class_values):

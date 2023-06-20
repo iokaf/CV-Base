@@ -67,29 +67,6 @@ def train_valid_test_split(
     # valid_data = [item for item in valid_data if item["first_cut"]]
     # test_data = [item for item in test_data if item["first_cut"]]
 
-    print("")
-    print(100 * "-")
-
-    train_positives = sum([item["last_cut"] for item in train_data])
-    train_negatives = len(train_data) - train_positives
-
-    valid_positives = sum([item["last_cut"] for item in valid_data])
-    valid_negatives = len(valid_data) - valid_positives
-
-    test_positives = sum([item["last_cut"] for item in test_data])
-    test_negatives = len(test_data) - test_positives
-    
-    print(f"Train positives: {train_positives}")
-    print(f"Train negatives: {train_negatives}")
-
-    print(f"Valid positives: {valid_positives}")
-    print(f"Valid negatives: {valid_negatives}")
-
-    print(f"Test positives: {test_positives}")
-    print(f"Test negatives: {test_negatives}")
-
-    print(100 * "-")
-    print("")
 
     return {
         "train_data": train_data,
