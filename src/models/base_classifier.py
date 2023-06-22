@@ -351,11 +351,12 @@ class BaseClassifier(pl.LightningModule):
             label_names: List[str]):
         """Creates the loggers for the model."""
 
-        multiclass_condition_1 = num_classes > 2 # Can not be binary
-        multiclass_condition_2 = num_classes == 2 and not mutually_exclusive
-
-        if multiclass_condition_1 or multiclass_condition_2:
-
+        multiclass_condition_1 = num_classes > 1 # Can not be binary
+        
+        if multiclass_condition_1:
+            print(5*"\n")
+            print("I am here ")
+            print(5*"\n")
             assert len(label_names) == num_classes, \
                 "The number of label names must be equal to the number of classes."
             
@@ -415,8 +416,11 @@ class BaseClassifier(pl.LightningModule):
         mutually_exclusive (bool):
             Whether the classes are mutually exclusive or not.
         """
-        if mutually_exclusive and num_classes > 1:
-            self.criterion = torch.nn.CrossEntropyLoss()
+        if mutually_exclusive:
+            loss_weights = self.config["model"]["loss_weights"]
+            loss_weights = torch.tensor(loss_weights)
+
+            self.criterion = torch.nn.CrossEntropyLoss(weight=loss_weights)
             self.activation = torch.nn.Softmax(dim=1)
         else:
             self.criterion = torch.nn.BCEWithLogitsLoss()

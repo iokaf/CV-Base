@@ -123,4 +123,4 @@ sweep_id = wandb.sweep(
     project = base_config["logging"]["project_name"],
 )
 
-wandb.agent(sweep_id, function=main, count=150)
+wandb.agent(sweep_id, function=main, count=250)

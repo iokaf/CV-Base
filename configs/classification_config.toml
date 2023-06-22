@@ -1,20 +1,23 @@
 [logging]
-project_name = "colo_vs_gastro"
+project_name = "Yanni_NC_With_Sampler"
 
 [model]
-name = "resnet18"  # "vit_small_patch16_384"
+name = "resnet34"  # "vit_small_patch16_384"
 pretrained = true
-number_of_classes = 3
+number_of_classes = 2
 mutually_exclusive = true
-freeze_layers = ["layer1", "layer2"]
+freeze_layers = []
+loss_weights = [1.0, 1.0]
 
 
 [data]
-images_directory = "/media/yanny/Extreme SSD/colo_vs_gastro/data"
-annotations_path = "/media/yanny/Extreme SSD/colo_vs_gastro/CV-Base/data/classification_data.json"
+images_directory = "/media/yanny/BackUp3/Polypectomy Quality Predictor/Predictor_Number_of_Cuts/data/yun_images"
+annotations_path = "/media/yanny/BackUp3/Polypectomy Quality Predictor/Predictor_Number_of_Cuts/data/train_data.json"
 validation_folds = [9, 0]
 test_folds = []
-label_names = ["colonoscopy", "gastroscopy", "bad"]
+label_names = ["Not Final Cut", "Final Cut"]
+
+use_sampler = false
 
 [transforms]
 width = 320
@@ -24,14 +27,14 @@ std = [0.31418097, 0.21088019, 0.16059452]
 
 [optimizer]
 name = "AdamW"
-learning_rate = 0.0004
+learning_rate = 0.0008697562234309324
 weight_decay = 0.0002
 eta_min = 0.000001
-use_scheduler = true
+use_scheduler = false
 
 
 [training]
-max_epochs = 50
+max_epochs = 30
 device = "cuda"
 checkpoint_directory = "./checkpoints"
 save_top_k = 1
@@ -40,15 +43,15 @@ stopping_patience = 0
 
 
 [dataloading]
-train_batch_size = 50
-valid_batch_size = 50
-test_batch_size = 50
+train_batch_size = 30
+valid_batch_size = 30
+test_batch_size = 30
 
 train_workers = 4
 valid_workers = 4
 test_workers = 4
 
-pin_memory = true
+pin_memory = false
 
 
 
