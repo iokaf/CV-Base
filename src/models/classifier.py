@@ -24,8 +24,13 @@ class Classifier(BaseClassifier):
             num_classes=config["model"]["number_of_classes"],
         )
 
-
-        print(config["model"].keys())
+        if self.config["model"]["load_model"]:
+            cpt_path = self.config["model"]["model_checkpoint_path"]
+            state_dict = torch.load(cpt_path, map_location=self.device)
+            if "state_dict" in state_dict:
+                state_dict = state_dict["state_dict"]
+            self.model.load_state_dict(state_dict)
+            print(f"Loaded model from {cpt_path}")
 
         # Freeze any selected layers
         for name, parameter in self.model.named_parameters():
