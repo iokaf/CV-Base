@@ -1,5 +1,5 @@
 [logging]
-project_name = "num_cuts_lstm"
+project_name = "my_recurrent_project"
 
 [model]
 name="lstm"
@@ -31,10 +31,10 @@ eta_min = 0.000001
 use_scheduler = false
 
 [data]
-images_directory = "/media/yanny/BackUp3/Polypectomy Quality Predictor/Snare_Resections_Data/snare_resections"
-annotations_path = "/media/yanny/BackUp3/Polypectomy Quality Predictor/Predictor_Number_of_Cuts/data/train_data.json"
+images_directory = ""
+annotations_path = ""
 
-validation_folds = [5, 9]
+validation_folds = [0, 9]
 test_folds = []
 label_names = ["negative", "positive"]
 
