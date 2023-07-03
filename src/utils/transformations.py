@@ -74,17 +74,31 @@ def get_augmentations(config: Dict):
             height=config["transforms"]["height"],
             width=config["transforms"]["width"],
         ),
-        A.MotionBlur(p=0.1),
-        A.MedianBlur(blur_limit=3, p=0.1),
-        A.Blur(blur_limit=3, p=0.1),
+        A.MotionBlur(p=0.5),
+        A.MedianBlur(blur_limit=3, p=0.5),
+        A.Blur(blur_limit=3, p=0.5),
         
-        A.CLAHE(p=0.1),
-        A.HueSaturationValue(hue_shift_limit=5, sat_shift_limit=15, val_shift_limit=15, p=0.1),
-        A.RandomBrightnessContrast(brightness_limit=0.3, contrast_limit=0.3, p=0.1),
+        A.CLAHE(p=0.5),
+        A.HueSaturationValue(hue_shift_limit=5, sat_shift_limit=15, val_shift_limit=15, p=0.5),
+        A.RandomBrightnessContrast(brightness_limit=0.3, contrast_limit=0.3, p=0.5),
         
-        A.Flip(0.25),
-        A.HorizontalFlip(p=0.25),
-        A.VerticalFlip(p=0.25),
+        A.GaussNoise(p=0.5),
+        A.ISONoise(p=0.5),
+        A.MultiplicativeNoise(p=0.5),
+
+        A.CoarseDropout(
+            min_holes=4,
+            max_holes=8, 
+            min_height=0.05,
+            max_height=0.1,
+            min_width=0.05,
+            max_width=0.1, 
+            p=0.5),
+        
+
+        A.Flip(0.5),
+        A.HorizontalFlip(p=0.5),
+        A.VerticalFlip(p=0.5),
         ], 
         additional_targets=additional_targets
     )

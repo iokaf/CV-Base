@@ -50,6 +50,7 @@ def create_trainer(config: Dict) -> pl.Trainer:
         max_epochs=config["training"]["max_epochs"],
         precision=config["training"]["precision"],
         callbacks=callbacks,
+        log_every_n_steps=10,
     )
 
     return trainer, checkpoint_callback

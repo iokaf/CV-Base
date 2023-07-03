@@ -29,14 +29,14 @@ std = [0.31418097, 0.21088019, 0.16059452]
 
 [optimizer]
 name = "AdamW"
-learning_rate = 0.0004
+learning_rate = 0.0008697562234309324
 weight_decay = 0.0002
 eta_min = 0.000001
-use_scheduler = true
+use_scheduler = false
 
 
 [training]
-max_epochs = 50
+max_epochs = 30
 device = "cuda"
 checkpoint_directory = "./checkpoints"
 save_top_k = 1
@@ -45,15 +45,15 @@ stopping_patience = 0
 
 
 [dataloading]
-train_batch_size = 50
-valid_batch_size = 50
-test_batch_size = 50
+train_batch_size = 30
+valid_batch_size = 30
+test_batch_size = 30
 
 train_workers = 4
 valid_workers = 4
 test_workers = 4
 
-pin_memory = true
+pin_memory = false
 
 
 

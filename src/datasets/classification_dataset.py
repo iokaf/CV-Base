@@ -9,7 +9,7 @@ import pytorch_lightning as pl
 import torch
 
 from torch.utils.data import Dataset, DataLoader
-
+from sampled_dataset import SampledDataset
 
 def load_data(json_path: str) -> List[Dict[str, Any]]:
     """Loads the data from a json file.
@@ -64,8 +64,15 @@ def train_valid_test_split(
     
 
     # # FixMe: Specific for the current dataset
-    # valid_data = [item for item in valid_data if item["first_cut"]]
-    # test_data = [item for item in test_data if item["first_cut"]]
+    # train_data = [item for item in train_data if item["first_cut"]]
+
+    print(f"Number of train data points: {len(train_data)}")
+    print(f"Number of valid data points: {len(valid_data)}")
+    print(f"Number of test data points: {len(test_data)}")
+
+
+    valid_data = [item for item in valid_data if item["first_cut"]]
+    test_data = [item for item in test_data if item["first_cut"]]
 
 
     return {
@@ -73,6 +80,95 @@ def train_valid_test_split(
         "valid_data": valid_data,
         "test_data": test_data,
     }
+
+class SampledClassificationDataset(SampledDataset):
+    """The dataset class"""
+
+    def __init__(
+        self, 
+        data: List[Dict[str, Any]],
+        desired_length: int,
+        desired_distribution: Dict[int, float],
+        images_dir: str,
+        transforms: Any,
+        augmentations: Optional[Any] = None,
+        ):
+        """Initializes the dataset.
+        
+        Arguments:
+        ----------
+        data (list): 
+            List of dictionaries containing the data.
+        transforms (Any): 
+            The transforms to be applied to the data.
+        augmentations (Any): 
+            The augmentations to be applied to the data.
+        """
+        # Create the label for each of the data here
+
+        for data_pt in data:
+            data_pt["label"] = int(data_pt["last_cut"])
+
+        super().__init__(
+            data=data,
+            desired_length=desired_length,
+            desired_distribution=desired_distribution,
+        )
+
+        self.transforms = transforms
+        self.augmentations = augmentations
+        self.images_dir = images_dir
+    
+    def __getitem__(self, idx: int) -> Dict[str, Any]:
+        """Returns a single item from the dataset.
+
+        Notes:
+        ------
+        We ensure that labels is at least 2D, so that it can be used with
+        torch.nn.CrossEntropyLoss.
+
+        Arguments:
+        ----------
+            idx (int): Index of the item to be returned.
+
+        Returns:
+        --------
+            dict: A dictionary containing the data.
+        """
+        self.number_of_calls_update()
+
+        item = self.use_data[idx]
+
+        video_filename = item["video_filename"]
+        if not video_filename.endswith(".mkv"):
+            video_filename += ".mkv"
+
+        frame_number = item["frame_num"]
+        image_path = os.path.join(self.images_dir, video_filename, f"{frame_number:07d}.jpg")
+        
+        image = cv2.imread(image_path)
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        
+
+        crop = item.get("crop")
+        if crop is not None:
+            image = image[crop[0]:crop[1], crop[2]:crop[3]]
+
+        if self.augmentations is not None:
+            image = self.augmentations(image=image)["image"]
+
+        image = self.transforms(image=image)["image"]
+        
+        label = numpy.array(item["label"]).astype(int)
+        # label = numpy.atleast_1d(label)
+        # label = torch.tensor(label, dtype=torch.long)
+        result = {
+            "image": image,
+            "label": label,
+        }
+
+        return result
+
 
 class ClassificationDataset(Dataset):
     """The dataset class"""
@@ -95,6 +191,8 @@ class ClassificationDataset(Dataset):
         augmentations (Any): 
             The augmentations to be applied to the data.
         """
+        for data_pt in data:
+            data_pt["label"] = int(data_pt["last_cut"])
 
         self.data = data
         self.transforms = transforms
@@ -128,7 +226,12 @@ class ClassificationDataset(Dataset):
         """
         item = self.data[idx]
 
-        image_path = item["image_path"]
+        video_filename = item["video_filename"]
+        if not video_filename.endswith(".mkv"):
+            video_filename += ".mkv"
+
+        frame_number = item["frame_num"]
+        image_path = os.path.join(self.images_dir, video_filename, f"{frame_number:07d}.jpg")
 
         image = cv2.imread(image_path)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -152,10 +255,12 @@ class ClassificationDataset(Dataset):
         }
 
         return result
-    
+
+
 def create_datasets(
         split_data: Dict, 
-        images_dir: str, 
+        images_dir: str,
+        config: Dict[str, Any],
         transforms: Any, 
         augmentations: Any
     ) -> Tuple[Dataset, Dataset, Dataset]:
@@ -173,12 +278,23 @@ def create_datasets(
         tuple: A tuple containing the train, validation and test datasets.
     """
 
-    train_dataset = ClassificationDataset(
-        data=split_data["train_data"],
-        images_dir=images_dir,
-        transforms=transforms,
-        augmentations=augmentations,
-    )
+    
+    if config["data"]["use_sampler"]:
+        train_dataset = SampledClassificationDataset(
+            data=split_data["train_data"],
+            desired_length=500,
+            desired_distribution={0: 0.4, 1: 0.6},
+            images_dir=images_dir,
+            transforms=transforms,
+            augmentations=augmentations,
+        )
+    else:
+        train_dataset = ClassificationDataset(
+            data=split_data["train_data"],
+            images_dir=images_dir,
+            transforms=transforms,
+            augmentations=augmentations,
+        )
 
     valid_dataset = ClassificationDataset(
         data=split_data["valid_data"],
@@ -232,6 +348,7 @@ def get_dataloaders(
     datasets = create_datasets(
         split_data=split_data,
         images_dir=config["data"]["images_directory"],
+        config=config,
         transforms=transforms,
         augmentations=augmentations,
     )
