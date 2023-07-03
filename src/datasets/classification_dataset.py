@@ -282,7 +282,7 @@ def create_datasets(
     if config["data"]["use_sampler"]:
         train_dataset = SampledClassificationDataset(
             data=split_data["train_data"],
-            desired_length=1_000,
+            desired_length=500,
             desired_distribution={0: 0.4, 1: 0.6},
             images_dir=images_dir,
             transforms=transforms,

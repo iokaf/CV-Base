@@ -50,6 +50,14 @@ class BaseClassifier(pl.LightningModule):
             num_classes=config["model"]["number_of_classes"],
         )
 
+        if self.config["model"]["load_model"]:
+            cpt_path = self.config["model"]["model_checkpoint_path"]
+            state_dict = torch.load(cpt_path, map_location=self.device)
+            if "state_dict" in state_dict:
+                state_dict = state_dict["state_dict"]
+            self.model.load_state_dict(state_dict)
+            print(f"Loaded model from {cpt_path}")
+
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """Forward pass of the classifier.
 
@@ -420,7 +428,7 @@ class BaseClassifier(pl.LightningModule):
             loss_weights = self.config["model"]["loss_weights"]
             loss_weights = torch.tensor(loss_weights)
 
-            self.criterion = torch.nn.CrossEntropyLoss(weight=loss_weights)
+            self.criterion = torch.nn.CrossEntropyLoss(loss_weights)
             self.activation = torch.nn.Softmax(dim=1)
         else:
             self.criterion = torch.nn.BCEWithLogitsLoss()

@@ -8,7 +8,8 @@ number_of_classes = 2
 mutually_exclusive = true
 freeze_layers = []
 loss_weights = [1.0, 1.0]
-
+load_model = false
+model_checkpoint_path = ""
 
 [data]
 images_directory = "/media/yanny/BackUp3/Polypectomy Quality Predictor/Predictor_Number_of_Cuts/data/yun_images"
