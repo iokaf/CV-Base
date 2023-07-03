@@ -1,5 +1,5 @@
 [logging]
-project_name = "sweep_colo_vs_gastro"
+project_name = "Yanni_Num_Cuts_Loss_Weights"
 
 [sweep_configuration]
 method = "bayes"
@@ -11,7 +11,7 @@ name = "valid_loss"
 [sweep_configuration.parameters]
 
 [sweep_configuration.parameters.model_names]
-values = ["convnext_nano", "resnet34", "vit_tiny_patch16_384", "resnet50"]
+values = ["convnext_nano", "resnet34", "resnet18", "resnet50"]
 
 [sweep_configuration.parameters.learning_rate]
 min = 0.0001
@@ -25,19 +25,26 @@ values = [true, false]
 
 [model]
 pretrained = true
-number_of_classes = 3
+number_of_classes = 2
 mutually_exclusive = true
+freeze_layers = []
+loss_weights = [2.5, 1.0]
+
+load_model = false
+model_checkpoint_path = ""
 
 [data]
-images_directory = "/home/swarm/Documents/Number_Of_Cuts/data/yun_images"
-annotations_path = "/home/swarm/Documents/Number_Of_Cuts/data/train_data.json"
+images_directory = "/media/yanny/BackUp3/Polypectomy Quality Predictor/Predictor_Number_of_Cuts/data/yun_images"
+annotations_path = "/media/yanny/BackUp3/Polypectomy Quality Predictor/Predictor_Number_of_Cuts/data/train_data.json"
 validation_folds = [0, 9]
 test_folds = []
-label_names = ["colonoscopy", "gastroscopy", "bad"]
+label_names = ["Not Final Cut", "Final Cut"]
+use_sampler = false
+
 
 [transforms]
-width = 384
-height = 384
+width = 416
+height = 320
 mean = [0.45211223, 0.27139644, 0.19264949]
 std = [0.31418097, 0.21088019, 0.16059452]
 
@@ -48,7 +55,7 @@ weight_decay = 0.0002
 eta_min = 0.000001
 
 [training]
-max_epochs = 50
+max_epochs = 80
 device = "cuda"
 checkpoint_directory = "./checkpoints"
 save_top_k = 1
@@ -65,7 +72,7 @@ train_workers = 4
 valid_workers = 4
 test_workers = 4
 
-pin_memory = true
+pin_memory = false
 
 
 
